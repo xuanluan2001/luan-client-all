@@ -1,13 +1,12 @@
 import { FormikHelpers } from "formik";
-import Cookies from "js-cookie";
 import { ResetOTPRequest } from "../../../utils/types/authType";
 import { NavigateFunction } from "react-router-dom";
 import { Dispatch } from "react";
 import { WrapperResponse } from "service-sdk/lib/types/BaseType";
-import {
-  getCurrentUserInformation,
-  resetOTP,
-} from "../../../utils/service-api/auth-service-api";
+import { resetOTP } from "../../../utils/service-api/auth-service-api";
+import { submitLogin } from "./processSubmitLogin";
+import { Toast } from "../../../utils/service-api/base-rest";
+import Cookies from "js-cookie";
 
 interface Values {
   otpCode: string;
@@ -19,89 +18,61 @@ export const initValue: Values = {
   error: "",
 };
 
-export const handleSubmit = async (
+export const handleSubmit = (
   actions: FormikHelpers<Values>,
-  datas: string | undefined,
+  sessionId: string,
   errors: WrapperResponse | undefined,
   navigate: NavigateFunction,
   setError: Dispatch<React.SetStateAction<string>>
 ) => {
-  actions.setSubmitting(false);
   actions.resetForm({
     values: {
       otpCode: "",
     },
   });
-  if (errors !== undefined) {
-    setError("");
-    if (typeof errors.data === "string") {
-      actions.setFieldError("error", errors.data);
-    } else {
-      actions.setFieldError("error", errors.data?.otpCode);
-    }
-    // clear error after 1.5s
-    setTimeout(() => {
-      actions.resetForm({ errors: {} });
-    }, 5000);
-  } else {
-    if (datas !== undefined && typeof datas === "string") {
-      //clear cookie of otp if check successful otp
-      Cookies.remove("_SSID-OTP");
+  setError("");
+  if (errors) {
+    typeof errors?.data === "string"
+      ? actions.setFieldError("error", errors.data)
+      : actions.setFieldError("error", errors?.data?.otpCode);
 
-      const cookieName: string = "_SSID-LOGIN-CODE";
-      //set type cookie to redirect page
-      let cookieType: string = "";
-      if (datas.startsWith("PIN")) {
-        //redirect to check-pin page to check pin code
-        cookieType = "_SSID-PIN";
-        Cookies.set(cookieType, "actived");
-        Cookies.set(cookieName, datas);
-        navigate("/check-pin", { state: { cookieName: cookieName } });
-      } else if (datas.startsWith("FINAL")) {
-        //redirect to dashboard page
-        cookieType = "_SSID-FINAL";
-        Cookies.set(cookieType, "actived", { expires: 0.5 });
-        await getCurrentUserInformation(datas)
-          .then((data) => Cookies.set("_Token-CODE", data.data?.token))
-          .catch((error) => console.log(error));
-        navigate("/dashboard");
-      }
-    }
+    // clear error after 5s
+    setTimeout(() => {
+      actions.setErrors({});
+    }, 5000);
   }
+
+  //clear cookie of otp if check successful otp
+  submitLogin(sessionId, navigate);
+  sessionId && Cookies.remove("_SSID-OTP");
+
+  actions.setSubmitting(false);
 };
 
 export const resetOTPHanleClick = async (
-  sessionId: string | undefined,
+  sessionId: string,
   setError: Dispatch<React.SetStateAction<string>>,
   setIsLoading: Dispatch<React.SetStateAction<boolean>>
 ) => {
   const request: ResetOTPRequest = { sessionId: sessionId };
+
   const fetch = await resetOTP(request);
-  if (fetch.data === undefined || fetch.errors !== undefined) {
+  if (fetch.data) {
+    Toast.fire({ icon: "success", title: "Đã gửi mã OTP đến mail của bạn!" });
+  } else {
     if (typeof fetch.errors?.data === "string") {
       setError(fetch.errors?.data);
     } else {
       setError(fetch.errors?.data?.sessionId);
     }
+    Toast.fire({ icon: "error", title: fetch.errors?.data });
     setTimeout(() => {
       setError("");
     }, 4000);
-  } else {
-    alert("Mã OTP đã được gửi đến email của bạn!");
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 4000);
   }
+  setIsLoading(false);
 };
 
-export const handleError = (
-  err: string | undefined,
-  error: string | undefined
-): string | undefined => {
-  if (error) {
-    err = "";
-    return error;
-  }
-
-  return err;
+export const handleError = (err?: string, error?: string): string => {
+  return error ? error : err ? err : "";
 };

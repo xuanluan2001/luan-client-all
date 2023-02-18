@@ -24,19 +24,17 @@ const LoginOTP: FC = (): ReactElement => {
   const sessionId = Cookies.get(location.state?.cookieName);
   const ssidOtp = Cookies.get("_SSID-OTP");
   useEffect(() => {
-    if (sessionId === undefined || !ssidOtp) {
-      if (ssidOtp === "actived") {
-        Cookies.remove("_SSID-OTP");
-      }
+    if (!sessionId || !ssidOtp) {
+      ssidOtp === "actived" && Cookies.remove("_SSID-OTP");
       navigate("/login");
     }
   }, [sessionId, navigate, ssidOtp]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const resetOTPClick = async () => {
+  const resetOTPClick = () => {
     setIsLoading(true);
-    resetOTPHanleClick(sessionId, setError, setIsLoading);
+    sessionId && resetOTPHanleClick(sessionId, setError, setIsLoading);
   };
 
   return (

@@ -37,7 +37,7 @@ export const loginPIN = (
 };
 
 export const getCurrentUserInformation = (
-  sessiondId: string | undefined
+  sessiondId: string
 ): Promise<BaseFetch> => {
   return RestController.getRestController(CURRENT_USER_URL + sessiondId);
 };

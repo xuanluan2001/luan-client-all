@@ -11,6 +11,11 @@ export interface User extends BaseEntity {
   isAllAccess?: boolean;
 }
 
+export interface JwtResponse {
+  orgId: string;
+  token: string;
+}
+
 // ************************** REQUEST **************************
 export interface UserLocalLoginRequest {
   username: string;

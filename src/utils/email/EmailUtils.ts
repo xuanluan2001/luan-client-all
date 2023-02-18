@@ -5,8 +5,8 @@ import {
   EmailConfig,
   EmailSender,
   EmailSenderConfig,
+  NewClientRequest,
 } from "../types/clientType";
-import { NewClientRequest } from "../types/clientType";
 
 class EmailUtils {
   checkServerOfMail = async (
