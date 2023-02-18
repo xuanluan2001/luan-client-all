@@ -11,12 +11,14 @@ import { login } from "../../utils/service-api/auth-service-api";
 import { initValue, handleSubmit } from "./formik/LoginFormik";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useAppDispatch } from "../../redux/store";
 
 const Login: FC = (): ReactElement => {
   // remove cookie when load to login page
   Cookies.remove("_SSID-FINAL");
   Cookies.remove("_SSID-LOGIN-CODE");
   Cookies.remove("_Token-CODE");
+  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
   return (
@@ -39,7 +41,13 @@ const Login: FC = (): ReactElement => {
                   actions.setSubmitting(true);
                   const fetch = await login(values);
 
-                  handleSubmit(actions, fetch.data, fetch.errors, navigate);
+                  handleSubmit(
+                    actions,
+                    fetch.data,
+                    fetch.errors,
+                    dispatch,
+                    navigate
+                  );
                 }}
               >
                 {({

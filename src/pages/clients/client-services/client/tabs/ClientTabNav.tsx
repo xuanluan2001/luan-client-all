@@ -25,7 +25,7 @@ const ClientTabNav: FC<PropTypes> = ({ clientId }) => {
         <Nav.Item>
           <Nav.Link
             href={`${detailPath}/management-tab`}
-            disabled={location.pathname === `${detailPath}/org-tab`}
+            disabled={location.pathname === `${detailPath}/management-tab`}
           >
             Tổ chức
           </Nav.Link>

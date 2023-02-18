@@ -1,12 +1,13 @@
 import Cookies from "js-cookie";
+import { Dispatch } from "react";
 import { NavigateFunction } from "react-router-dom";
-import { getCurrentUserInformation } from "../../../utils/service-api/auth-service-api";
+import { getUserInformation } from "../../../redux/auth/auth-thunks";
 
-export const submitLogin = async (
+export const SubmitLogin = async (
   sessionId: string,
+  dispatch: Dispatch<any>,
   navigate: NavigateFunction
 ) => {
-  // Cookies.remove(cookieName);
   //set type cookie to redirect page
   const cookieName: string = "_SSID-LOGIN-CODE";
 
@@ -23,12 +24,10 @@ export const submitLogin = async (
       navigate("/check-pin", { state: { cookieName: cookieName } });
     } else if (sessionId.startsWith("FINAL")) {
       //redirect to dashboard page
+      Cookies.set(cookieName, sessionId);
       Cookies.set("_SSID-FINAL", "actived");
       // finish login => set Jwt Token to cookie
-      await getCurrentUserInformation(sessionId).then((data) =>
-        Cookies.set("_Token-CODE", data.data?.token)
-      );
-      navigate("/dashboard");
+      dispatch(getUserInformation(sessionId));
     }
   }
 };

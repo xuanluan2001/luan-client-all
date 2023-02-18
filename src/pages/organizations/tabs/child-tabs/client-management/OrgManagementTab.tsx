@@ -36,9 +36,7 @@ const OrgManagementTab = () => {
 
   useEffect(() => {
     searchOrganizationClient(clientId, outletContext.orgId, filter).then(
-      (data) => {
-        setResult(data.data?.data);
-      }
+      (data) => setResult(data.data?.data)
     );
   }, [filter.offset, filter.maxResult, outletContext.orgId]);
   return (
@@ -58,6 +56,13 @@ const OrgManagementTab = () => {
                     name="search"
                     value={filter.search}
                     handleChange={handleFilter}
+                    hanleClick={() => {
+                      searchOrganizationClient(
+                        clientId,
+                        outletContext.orgId,
+                        filter
+                      ).then((data) => setResult(data.data?.data));
+                    }}
                   />
                 </Form>
               </Col>

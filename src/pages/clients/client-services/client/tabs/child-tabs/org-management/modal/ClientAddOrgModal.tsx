@@ -3,6 +3,8 @@ import React, { FC, useEffect, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import FormInput from "../../../../../../../../components/form/form-input/FormInput";
 import FormSelectCustom from "../../../../../../../../components/form/form-select/FormSelect";
+import { selectUserOrgId } from "../../../../../../../../redux/auth/auth-selectors";
+import { useAppSelector } from "../../../../../../../../redux/store";
 import {
   addOrganizationClient,
   getAllOrganization,
@@ -15,12 +17,14 @@ import AddOrgClientFormik from "../formik/ClientAddOrgFormik";
 const ClientAddOrgModal: FC<ShowModal> = ({ isOpened, handleClose }) => {
   const outletContext = useContextClientId();
   const [organizations, setOrganizations] = useState<Organization[]>();
+  const userOrgId = useAppSelector(selectUserOrgId);
 
   useEffect(() => {
-    getAllOrganization("all").then((data) => {
-      setOrganizations(data.data?.data);
-    });
-  }, []);
+    userOrgId &&
+      getAllOrganization(userOrgId).then((data) => {
+        setOrganizations(data.data?.data);
+      });
+  }, [userOrgId]);
 
   return (
     <>

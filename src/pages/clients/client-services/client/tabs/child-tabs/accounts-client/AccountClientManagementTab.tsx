@@ -5,6 +5,8 @@ import SearchPage from "../../../../../../../components/search-page/SearchPage";
 import TableCutom, {
   ColumnCustom,
 } from "../../../../../../../components/table-custom/TableCustom";
+import { selectUserOrgId } from "../../../../../../../redux/auth/auth-selectors";
+import { useAppSelector } from "../../../../../../../redux/store";
 import SearchFilter from "../../../../../../../utils/search/SearchFilter";
 import { searchUser } from "../../../../../../../utils/service-api/auth-service-api";
 import { User, UserFilter } from "../../../../../../../utils/types/authType";
@@ -12,8 +14,9 @@ import { ResultList } from "../../../../../../../utils/types/baseType";
 import { useContextClientId } from "../../../ClientDetail";
 
 const columns: ColumnCustom[] = [
-  { field: "id", header: "Mã tài khoản" },
   { field: "orgId", header: "Mã tổ chức" },
+  { field: "username", header: "Tên đăng nhập" },
+  { field: "email", header: "Email" },
   { field: "authProvider", header: "Loại tài khoản" },
   { field: "createdBy", header: "Nguời tạo" },
   { field: "createdAt", header: "Ngày tạo" },
@@ -27,12 +30,14 @@ const AccountClientManagementTab = () => {
     offset: 0,
     maxResult: 20,
   });
+  const userOrgId = useAppSelector(selectUserOrgId);
 
   useEffect(() => {
-    searchUser(outletContext.clientId, "all", filter).then((data) => {
-      setResult(data.data?.data);
-    });
-  }, [filter.offset, filter.maxResult, outletContext.clientId]);
+    userOrgId &&
+      searchUser(outletContext.clientId, userOrgId, filter).then((data) => {
+        setResult(data.data?.data);
+      });
+  }, [filter.offset, filter.maxResult, outletContext.clientId, userOrgId]);
 
   return (
     <>
@@ -51,6 +56,15 @@ const AccountClientManagementTab = () => {
                     name="search"
                     value={filter.search}
                     handleChange={handleFilter}
+                    hanleClick={() =>
+                      searchUser(
+                        outletContext.clientId,
+                        userOrgId,
+                        filter
+                      ).then((data) => {
+                        setResult(data.data?.data);
+                      })
+                    }
                   />
                 </Form>
               </Col>

@@ -1,7 +1,8 @@
 import { FormikHelpers } from "formik";
+import { Dispatch } from "react";
 import { NavigateFunction } from "react-router-dom";
 import { WrapperResponse } from "service-sdk/lib/types/BaseType";
-import { submitLogin } from "./processSubmitLogin";
+import { SubmitLogin } from "./processSubmitLogin";
 
 interface Values {
   username: string;
@@ -17,6 +18,7 @@ export const handleSubmit = (
   actions: FormikHelpers<Values>,
   sessionId: string,
   errors: WrapperResponse | undefined,
+  dispatch: Dispatch<any>,
   navigate: NavigateFunction
 ) => {
   actions.resetForm({
@@ -35,6 +37,6 @@ export const handleSubmit = (
     }, 5000);
   }
 
-  submitLogin(sessionId, navigate);
+  SubmitLogin(sessionId, dispatch, navigate);
   actions.setSubmitting(false);
 };

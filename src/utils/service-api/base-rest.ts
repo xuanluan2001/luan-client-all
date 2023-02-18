@@ -8,7 +8,6 @@ import { clientId } from "../constants/baseConstants";
 
 export const tokenHeader = (): string | undefined => {
   const cookieName: string = "_Token-CODE";
-
   return Cookies.get(cookieName);
 };
 

@@ -57,6 +57,11 @@ const ClientServices: FC = (): ReactElement => {
                     name="search"
                     value={filter.search}
                     handleChange={handleFilter}
+                    hanleClick={() => {
+                      searchClient(clientId, filter).then((data) => {
+                        setResult(data.data?.data);
+                      });
+                    }}
                   />
                 </Form>
               </Col>

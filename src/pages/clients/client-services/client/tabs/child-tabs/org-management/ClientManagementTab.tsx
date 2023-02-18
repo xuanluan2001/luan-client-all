@@ -7,6 +7,8 @@ import SearchPage from "../../../../../../../components/search-page/SearchPage";
 import TableCutom, {
   ColumnCustom,
 } from "../../../../../../../components/table-custom/TableCustom";
+import { selectUserOrgId } from "../../../../../../../redux/auth/auth-selectors";
+import { useAppSelector } from "../../../../../../../redux/store";
 import SearchFilter from "../../../../../../../utils/search/SearchFilter";
 import { searchOrganizationClient } from "../../../../../../../utils/service-api/org-service-api";
 import { ResultList } from "../../../../../../../utils/types/baseType";
@@ -29,17 +31,17 @@ const ClientManagementTab = () => {
     offset: 0,
     maxResult: 20,
   });
+  const userOrgId = useAppSelector(selectUserOrgId);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    searchOrganizationClient(outletContext.clientId, "all", filter).then(
-      (data) => {
-        setResult(data.data?.data);
-      }
-    );
-  }, [filter.offset, filter.maxResult, outletContext.clientId]);
+    userOrgId &&
+      searchOrganizationClient(outletContext.clientId, userOrgId, filter).then(
+        (data) => setResult(data.data?.data)
+      );
+  }, [filter.offset, filter.maxResult, outletContext.clientId, userOrgId]);
 
   return (
     <>
@@ -58,6 +60,13 @@ const ClientManagementTab = () => {
                     name="search"
                     value={filter.search}
                     handleChange={handleFilter}
+                    hanleClick={() => {
+                      searchOrganizationClient(
+                        outletContext.clientId,
+                        userOrgId,
+                        filter
+                      ).then((data) => setResult(data.data?.data));
+                    }}
                   />
                 </Form>
               </Col>

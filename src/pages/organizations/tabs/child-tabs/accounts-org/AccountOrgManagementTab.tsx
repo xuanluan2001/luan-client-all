@@ -13,8 +13,9 @@ import { ResultList } from "../../../../../utils/types/baseType";
 import { useContextOrgId } from "../../../OrganizationDetail";
 
 const columns: ColumnCustom[] = [
-  { field: "id", header: "Mã tài khoản" },
   { field: "clientId", header: "Mã dịch vụ" },
+  { field: "username", header: "Tên đăng nhập" },
+  { field: "email", header: "Email" },
   { field: "authProvider", header: "Loại tài khoản" },
   { field: "createdBy", header: "Nguời tạo" },
   { field: "createdAt", header: "Ngày tạo" },
@@ -30,7 +31,7 @@ const AccountOrgManagementTab = () => {
   });
 
   useEffect(() => {
-    searchUser(clientId, "all", filter).then((data) => {
+    searchUser(clientId, outletContext.orgId, filter).then((data) => {
       setResult(data.data?.data);
     });
   }, [filter.offset, filter.maxResult, outletContext.orgId]);
@@ -52,6 +53,11 @@ const AccountOrgManagementTab = () => {
                     name="search"
                     value={filter.search}
                     handleChange={handleFilter}
+                    hanleClick={() => {
+                      searchUser(clientId, outletContext.orgId, filter).then(
+                        (data) => setResult(data.data?.data)
+                      );
+                    }}
                   />
                 </Form>
               </Col>

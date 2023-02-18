@@ -45,16 +45,15 @@ class ClientFormik {
   ) => {
     actions.setSubmitting(false);
 
-    if (errors !== undefined && typeof errors.data !== "string") {
-      actions.setFieldError("leaderName", errors.data?.leaderName);
-      actions.setFieldError("clientName", errors.data?.clientName);
-      actions.setFieldError("clientEmail", errors.data?.clientEmail);
-      actions.setFieldError("clientTypeId", errors.data?.clientTypeId);
-      actions.setFieldError("phoneNumber", errors.data?.phoneNumber);
-      actions.setFieldError("clientPhone", errors.data?.clientPhone);
-      actions.setFieldError("object", errors.data?.object);
-      actions.setFieldError("file", errors.data?.file);
-    }
+    actions.setFieldError("leaderName", errors?.data?.leaderName);
+    actions.setFieldError("clientName", errors?.data?.clientName);
+    actions.setFieldError("clientEmail", errors?.data?.clientEmail);
+    actions.setFieldError("clientTypeId", errors?.data?.clientTypeId);
+    actions.setFieldError("phoneNumber", errors?.data?.phoneNumber);
+    actions.setFieldError("clientPhone", errors?.data?.clientPhone);
+    actions.setFieldError("object", errors?.data?.object);
+    actions.setFieldError("file", errors?.data?.file);
+
     setTimeout(() => {
       actions.setErrors({});
     }, 5000);

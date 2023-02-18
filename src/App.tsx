@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import PrivatedRoutes, { isSuccessLogin } from "./utils/PrivatedRoutes";
 import LoginTemplate from "./templates/LoginTL";
@@ -18,9 +18,22 @@ import AccountOrgManagementTab from "./pages/organizations/tabs/child-tabs/accou
 import AccountClientManagementTab from "./pages/clients/client-services/client/tabs/child-tabs/accounts-client/AccountClientManagementTab";
 import ClientManagementTab from "./pages/clients/client-services/client/tabs/child-tabs/org-management/ClientManagementTab";
 import OrgManagementTab from "./pages/organizations/tabs/child-tabs/client-management/OrgManagementTab";
+import { useAppDispatch } from "./redux/store";
+import { JwtResponse } from "./utils/types/authType";
+import { setCurrentUser } from "./redux/auth/auth-slice";
 
 const App: FC = () => {
   const isSuccess = isSuccessLogin();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const currentUser: JwtResponse = JSON.parse(
+      localStorage.getItem("currentUser") as string
+    );
+    if (currentUser) {
+      dispatch(setCurrentUser(currentUser));
+    }
+  }, []);
   return (
     <>
       <Routes>

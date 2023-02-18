@@ -11,11 +11,12 @@ import loginBackground from "./img/loginbackground.png";
 import { initValue, handleSubmit } from "./formik/LoginPINFormik";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/store";
 
 const LoginPIN: FC = (): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
   const sessionId = Cookies.get(location.state?.cookieName);
   const ssidOtp = Cookies.get("_SSID-PIN");
   useEffect(() => {
@@ -43,7 +44,13 @@ const LoginPIN: FC = (): ReactElement => {
                 onSubmit={async (values, actions) => {
                   actions.setSubmitting(true);
                   const fetch = await loginPIN(sessionId, values);
-                  handleSubmit(actions, fetch.data, fetch.errors, navigate);
+                  handleSubmit(
+                    actions,
+                    fetch.data,
+                    fetch.errors,
+                    dispatch,
+                    navigate
+                  );
                 }}
               >
                 {({

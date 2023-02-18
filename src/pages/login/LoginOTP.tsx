@@ -16,6 +16,7 @@ import {
 } from "./formik/LoginOTPFormik";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/store";
 
 const LoginOTP: FC = (): ReactElement => {
   const location = useLocation();
@@ -30,6 +31,7 @@ const LoginOTP: FC = (): ReactElement => {
     }
   }, [sessionId, navigate, ssidOtp]);
 
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const resetOTPClick = () => {
@@ -59,6 +61,7 @@ const LoginOTP: FC = (): ReactElement => {
                     actions,
                     fetch.data,
                     fetch.errors,
+                    dispatch,
                     navigate,
                     setError
                   );

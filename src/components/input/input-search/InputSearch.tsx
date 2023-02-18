@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, FC } from "react";
+import React, { ChangeEventHandler, FC, MouseEventHandler } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import IconButton from "../../icon-button/IconButton";
 
@@ -9,7 +9,7 @@ type PropsType = {
   name?: string;
   value?: string;
   handleChange?: ChangeEventHandler<HTMLInputElement>;
-  list?: string;
+  hanleClick?: MouseEventHandler;
   isButton?: boolean;
 };
 
@@ -20,6 +20,7 @@ const InputSearch: FC<PropsType> = ({
   name,
   value,
   handleChange,
+  hanleClick,
   isButton = true,
 }) => {
   return (
@@ -30,7 +31,14 @@ const InputSearch: FC<PropsType> = ({
         placeholder={placeHolder}
         onChange={handleChange}
       />
-      {isButton && <IconButton icon={icon} className="btn-custom" />}
+      {isButton && (
+        <IconButton
+          onClick={hanleClick}
+          icon={icon}
+          className="btn-custom"
+          type="button"
+        />
+      )}
     </InputGroup>
   );
 };

@@ -7,6 +7,8 @@ import SearchPage from "../../components/search-page/SearchPage";
 import TableCutom, {
   ColumnCustom,
 } from "../../components/table-custom/TableCustom";
+import { selectUserOrgId } from "../../redux/auth/auth-selectors";
+import { useAppSelector } from "../../redux/store";
 import SearchFilter from "../../utils/search/SearchFilter";
 import { searchOrganization } from "../../utils/service-api/org-service-api";
 import { ResultList } from "../../utils/types/baseType";
@@ -28,15 +30,16 @@ const OrganizationList = () => {
   });
   const [result, setResult] = useState<ResultList<Organization>>();
   const [show, setShow] = useState(false);
-
+  const userOrgId = useAppSelector(selectUserOrgId);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    searchOrganization("all", filter).then((data) => {
-      setResult(data.data?.data);
-    });
-  }, [filter.offset, filter.maxResult]);
+    userOrgId &&
+      searchOrganization(userOrgId, filter).then((data) => {
+        setResult(data.data?.data);
+      });
+  }, [filter.offset, filter.maxResult, userOrgId]);
 
   return (
     <>
@@ -55,6 +58,11 @@ const OrganizationList = () => {
                     name="search"
                     value={filter.search}
                     handleChange={handleFilter}
+                    hanleClick={() => {
+                      searchOrganization(userOrgId, filter).then((data) => {
+                        setResult(data.data?.data);
+                      });
+                    }}
                   />
                 </Form>
               </Col>

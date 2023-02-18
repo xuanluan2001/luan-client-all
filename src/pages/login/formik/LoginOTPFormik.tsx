@@ -4,7 +4,7 @@ import { NavigateFunction } from "react-router-dom";
 import { Dispatch } from "react";
 import { WrapperResponse } from "service-sdk/lib/types/BaseType";
 import { resetOTP } from "../../../utils/service-api/auth-service-api";
-import { submitLogin } from "./processSubmitLogin";
+import { SubmitLogin } from "./processSubmitLogin";
 import { Toast } from "../../../utils/service-api/base-rest";
 import Cookies from "js-cookie";
 
@@ -22,6 +22,7 @@ export const handleSubmit = (
   actions: FormikHelpers<Values>,
   sessionId: string,
   errors: WrapperResponse | undefined,
+  dispatch: Dispatch<any>,
   navigate: NavigateFunction,
   setError: Dispatch<React.SetStateAction<string>>
 ) => {
@@ -43,7 +44,7 @@ export const handleSubmit = (
   }
 
   //clear cookie of otp if check successful otp
-  submitLogin(sessionId, navigate);
+  SubmitLogin(sessionId, dispatch, navigate);
   sessionId && Cookies.remove("_SSID-OTP");
 
   actions.setSubmitting(false);

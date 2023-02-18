@@ -16,6 +16,7 @@ type ContextType = { orgId: string };
 
 const OrganizationDetail = () => {
   const orgId = useParams();
+
   return (
     <Col className="main">
       <div className="main-header">
